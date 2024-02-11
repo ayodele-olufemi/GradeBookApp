@@ -20,25 +20,30 @@ $username_err = $password_err = $confirm_password_err = $firstname_err = $lastna
 
 // Processing form data when sign-up form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // Validate username
+    $usertype = $_POST["usertype"];
+    // Validate username and email
     if (empty(trim($_POST["username"]))) {
         $username_err = "Please enter a username.";
     } elseif (empty(trim($_POST["email"]))) {
         $email_err = "Please enter an email.";
     } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))) {
         $username_err = "Username can only contain letters, numbers, and underscores.";
+    } elseif (!filter_var(trim($_POST["email"]), FILTER_VALIDATE_EMAIL)) {
+        $email_err = "Please enter a valid email";
     } else {
         // Prepare a select statement
         if ($usertype == "students") {
-            $sql = "SELECT a.id FROM auth_table a JOIN students s ON a.studentId = s.studentId WHERE a.username = ? AND s.email = ?";
+            //$sql1 = "SELECT a.id FROM auth_table a JOIN students s ON a.studentId = s.studentId WHERE a.username = ? AND s.email = ?";
+            $sql1 = "SELECT id FROM auth_table WHERE username = ?";
+            $sql2 = "SELECT id FROM students WHERE email = ?";
         } else {
-            $sql = "SELECT a.id FROM auth_table a JOIN professors p ON a.professorId = p.professorId WHERE a.username = ? AND p.email = ?";
+            $sql1 = "SELECT id FROM auth_table WHERE username = ?";
+            $sql2 = "SELECT id FROM professors WHERE email = ?";
         }
 
         $sql = "SELECT id FROM auth_table WHERE username = ?";
 
-        if ($stmt = mysqli_prepare($db, $sql)) {
+        if ($stmt = mysqli_prepare($db, $sql1)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "s", $param_username);
 
@@ -54,6 +59,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $username_err = "This username is already taken.";
                 } else {
                     $username = trim($_POST["username"]);
+                }
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+
+        if ($stmt = mysqli_prepare($db, $sql2)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_email);
+
+            // Set parameters
+            $param_email = trim($_POST["email"]);
+
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                /* store result */
+                mysqli_stmt_store_result($stmt);
+
+                if (mysqli_stmt_num_rows($stmt) == 1) {
+                    $email_err = "A " . ucfirst(substr($usertype, 0, -1)) . " with this email already exists. <br> Retrieve your login details here.";
+                } else {
+                    $email = trim($_POST["email"]);
                 }
             } else {
                 echo "Oops! Something went wrong. Please try again later.";
@@ -83,30 +113,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validate first name
+    if (empty(trim($_POST["firstname"]))) {
+        $firstname_err = "Please enter your first name.";
+    } elseif (!preg_match('/^[a-z]*$/i', trim($_POST["firstname"]))) {
+        $firstname_err = "Please enter a valid first name.";
+    } else {
+        $firstname = trim($_POST["firstname"]);
+    }
+
+    // Validate last name
+    if (empty(trim($_POST["lastname"]))) {
+        $firstname_err = "Please enter your first name.";
+    } elseif (!preg_match('/^[a-z]*$/i', trim($_POST["lastname"]))) {
+        $firstname_err = "Please enter a valid last name.";
+    } else {
+        $lastname = trim($_POST["lastname"]);
+    }
+
     // Check input errors before inserting in database
-    if (empty($username_err) && empty($password_err) && empty($confirm_password_err)) {
+    if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err)) {
 
         // Prepare an insert statement
-        $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+        $sql1 = "INSERT INTO users (username, password) VALUES (?, ?)";
 
-        if ($stmt = mysqli_prepare($db, $sql)) {
+        if ($usertype == "students") {
+            $sql1 = "INSERT INTO auth_table (studentId, username, password_hash)";
+            $sql2 = "INSERT INTO students (firstName, lastName, email, phone) VALUES ()";
+        } else {
+            $sql1 = "INSERT INTO auth_table (studentId, username, password_hash)";
+            $sql2 = "INSERT INTO professors (firstName, lastName, email, phone) VALUES ()";
+        }
+
+        if ($stmt2 = mysqli_prepare($db, $sql2)) {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+            mysqli_stmt_bind_param($stmt2, "ssss", $param_firstname, $param_lastname, $param_email, $param_phone);
 
             // Set parameters
-            $param_username = $username;
-            $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+            $param_firstname = $firstname;
+            $param_lastname = $lastname;
+            $param_email = $email;
+            $param_phone = trim($_POST["phone"]);
 
             // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Redirect to login page
-                header("location: login.php");
+            if (mysqli_stmt_execute($stmt2)) {
+                $lastInsertedId = mysqli_insert_id($db);
+
+                if ($stmt1 = mysqli_prepare($db, $sql1)) {
+                    // Bind variables to the prepared statement as parameters
+                    if ($usertype == "students") {
+                        mysqli_stmt_bind_param($stmt, "iss", $param_studentId, $param_username, $param_password);
+                        $param_studentId = $lastInsertedId;
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "iss", $param_professorId, $param_username, $param_password);
+                        $param_professorId = $lastInsertedId;
+                    }
+
+                    // Set other parameters
+                    $param_username = $username;
+                    $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+
+                    // Attempt to execute the prepared statement
+                    if (mysqli_stmt_execute($stmt1)) {
+                        // Redirect to login page
+                        echo "Registration successful! Redirecting to login page.";
+                    } else {
+                        echo "Oops! Something went wrong. Please try again later.";
+                    }
+                    // Close statement
+                    mysqli_stmt_close($stmt1);
+                }
             } else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
-
             // Close statement
-            mysqli_stmt_close($stmt);
+            mysqli_stmt_close($stmt2);
+            // Redirect to login page
+            header("refresh:5; location: " . $docRoot . "index.php");
         }
     }
 
