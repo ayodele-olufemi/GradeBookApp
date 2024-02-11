@@ -124,9 +124,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate last name
     if (empty(trim($_POST["lastname"]))) {
-        $firstname_err = "Please enter your first name.";
+        $lastname_err = "Please enter your first name.";
     } elseif (!preg_match('/^[a-z]*$/i', trim($_POST["lastname"]))) {
-        $firstname_err = "Please enter a valid last name.";
+        $lastname_err = "Please enter a valid last name.";
     } else {
         $lastname = trim($_POST["lastname"]);
     }
@@ -138,11 +138,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql1 = "INSERT INTO users (username, password) VALUES (?, ?)";
 
         if ($usertype == "students") {
-            $sql1 = "INSERT INTO auth_table (studentId, username, password_hash)";
-            $sql2 = "INSERT INTO students (firstName, lastName, email, phone) VALUES ()";
+            $sql1 = "INSERT INTO auth_table (studentId, username, password_hash) VALUES (?, ?, ?)";
+            $sql2 = "INSERT INTO students (firstName, lastName, email, phone) VALUES (?, ?, ?, ?)";
         } else {
-            $sql1 = "INSERT INTO auth_table (studentId, username, password_hash)";
-            $sql2 = "INSERT INTO professors (firstName, lastName, email, phone) VALUES ()";
+            $sql1 = "INSERT INTO auth_table (professorId, username, password_hash) VALUES (?, ?, ?)";
+            $sql2 = "INSERT INTO professors (firstName, lastName, email, phone) VALUES (?, ?, ?, ?)";
         }
 
         if ($stmt2 = mysqli_prepare($db, $sql2)) {
@@ -162,10 +162,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($stmt1 = mysqli_prepare($db, $sql1)) {
                     // Bind variables to the prepared statement as parameters
                     if ($usertype == "students") {
-                        mysqli_stmt_bind_param($stmt, "iss", $param_studentId, $param_username, $param_password);
+                        mysqli_stmt_bind_param($stmt1, "iss", $param_studentId, $param_username, $param_password);
                         $param_studentId = $lastInsertedId;
                     } else {
-                        mysqli_stmt_bind_param($stmt, "iss", $param_professorId, $param_username, $param_password);
+                        mysqli_stmt_bind_param($stmt1, "iss", $param_professorId, $param_username, $param_password);
                         $param_professorId = $lastInsertedId;
                     }
 
@@ -189,7 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Close statement
             mysqli_stmt_close($stmt2);
             // Redirect to login page
-            header("refresh:5; location: " . $docRoot . "index.php");
+            header("refresh:5; url=" . $docRoot . "index.php");
         }
     }
 
@@ -209,13 +209,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="text" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
+            <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
             <span class="invalid-feedback"><?php echo $password_err; ?></span>
         </div>
 
         <div class="form-group">
             <label for="confirm_password">Confirm Password</label>
-            <input type="text" name="confirm_password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $confirm_password; ?>">
+            <input type="password" name="confirm_password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $confirm_password; ?>">
             <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
         </div>
 

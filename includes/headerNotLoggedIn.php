@@ -12,10 +12,105 @@ session_start();
 
 // Check if the user is already logged in. Change header to headerLoggedIn.php
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-    header("location:" . $path . "/otherPages/welcome.php");
+    if ($_SESSION["usertype"] == "student") {
+        header("location: welcomeStudent.php");
+    } else {
+        header("location: welcomeProfessor.php");
+    }
+    exit;
 }
 
 require_once($path . "/includes/config.php");
+
+
+// Define variables and initialize with empty values
+$username = $password = "";
+$username_err = $password_err = $login_err = "";
+
+// Processing form data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Check if username is empty
+    if (empty(trim($_POST["username"]))) {
+        $username_err = "Please enter username.";
+    } else {
+        $username = trim($_POST["username"]);
+    }
+
+    // Check if password is empty
+    if (empty(trim($_POST["password"]))) {
+        $password_err = "Please enter your password.";
+    } else {
+        $password = trim($_POST["password"]);
+    }
+
+    // Validate credentials
+    if (empty($username_err) && empty($password_err)) {
+        // Prepare a select statement
+        $sql = "SELECT id, username, password_hash, studentId, professorId FROM auth_table WHERE username = ?";
+
+        if ($stmt = mysqli_prepare($db, $sql)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_username);
+
+            // Set parameters
+            $param_username = $username;
+
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                // Store result
+                mysqli_stmt_store_result($stmt);
+
+                // Check if username exists, if yes then verify password
+                if (mysqli_stmt_num_rows($stmt) == 1) {
+                    // Bind result variables
+                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $studentId, $professorId);
+                    if (mysqli_stmt_fetch($stmt)) {
+                        if (password_verify($password, $hashed_password)) {
+                            // Password is correct, so start a new session
+                            session_start();
+
+                            // Store data in session variables
+                            $_SESSION["loggedin"] = true;
+                            $_SESSION["id"] = $id;
+                            $_SESSION["username"] = $username;
+
+                            if (!empty($studentId)) {
+                                //user is student
+                                $_SESSION["usertype"] = "student";
+                                $_SESSION["studendId"] = (int)$studentId;
+
+                                // Redirect user to welcome page
+                                header("location: welcomeStudent.php");
+                            } else {
+                                //user is professor
+                                $_SESSION["usertype"] = "professor";
+                                $_SESSION["professorId"] = (int)$professorId;
+
+                                // Redirect user to welcome page
+                                header("location: welcomeProfessor.php");
+                            }
+                        } else {
+                            // Password is not valid, display a generic error message
+                            $login_err = "Invalid username or password.";
+                        }
+                    }
+                } else {
+                    // Username doesn't exist, display a generic error message
+                    $login_err = "Invalid username or password.";
+                }
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
+
+    // Close connection
+    mysqli_close($db);
+}
 ?>
 
 <head>
@@ -36,14 +131,22 @@ require_once($path . "/includes/config.php");
         </a>
         <div class="otherItems">
             <div class="loginForm">
-                <form action="login.php" method="post">
+                <?php
+                if (!empty($login_err)) {
+                    echo '<div class="alert alert-danger">' . $login_err . '</div>';
+                }
+                ?>
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <label for="username">Username: </label>
-                    <input type="text" name="username"> <br>
+                    <input type="text" name="username" class="<?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>"> <br>
+                    <span class="invalid-feedback"><?php echo $username_err; ?></span><br>
+
                     <label for="password">Password: </label>
-                    <input type="password" name="password"><br>
-                    <p id="errorMessage"></p>
+                    <input type="password" name="password" class="<?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>"><br>
+                    <span class="invalid-feedback"><?php echo $password_err; ?></span><br>
+
                     <p>Forgot your password? Click <a href="<?= $docRoot ?>otherPages/resetpassword.php">here</a> to reset it.</p>
-                    <button type="submit">Login</button>
+                    <input type="submit" class="btn btn-primary" value="Login">
                 </form>
             </div>
             <div class="callToSignUp">

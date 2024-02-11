@@ -12,9 +12,14 @@ session_start();
 
 // Check if the user is already logged in. Change header to headerLoggedIn.php
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-    header("location:" . $path . "/otherPages/welcome.php");
+    if (isset($_SESSION["usertype"])) {
+        if ($_SESSION["usertype"] == "student") {
+            header("location: welcomeStudent.php");
+        } else if ($_SESSION["usertype"] == "professor") {
+            header("location: welcomeProfessor.php");
+        }
+    }
 }
-
 ?>
 
 <head>

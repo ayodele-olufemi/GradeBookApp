@@ -6,14 +6,16 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerNotLoggedIn.php";
+$header = $path . "/includes/headerLoggedIn.php";
 $footer = $path . "/includes/footer.php";
 
 include($header);
 ?>
 <div class="content">
-    <h1>Home Page</h1>
-
+    <h1>Student Welcome Page</h1>
+    <?php
+    echo "<p>The StudentId is " . $_SESSION["studentId"] . "</p>";
+    ?>
 </div>
 <?php
 include($footer);
