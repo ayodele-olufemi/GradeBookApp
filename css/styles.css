@@ -1,0 +1,71 @@
+body {
+    width: 80%;
+    margin: auto;
+    padding: 0 20px 20px 20px;
+}
+
+.g_one_logo {
+    height: calc(0.15 * 100vh);
+    margin-top: 1.5rem;
+}
+.loginForm {
+    width: 100%;
+    border: 3px solid black;
+    text-align: center;
+    display: inline-block;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 1.5rem;
+    background-color: gold;
+}
+
+.loginForm label {
+    width: 7rem;
+    text-align: left;
+    font-weight:bold;
+}
+
+.loginForm button {
+    background-color: black;
+    color: white;
+    width: 5rem;
+    border-radius: 10px;
+}
+
+.loginForm input {
+    width: 15rem;
+    margin-bottom: 10px;
+}
+
+.heading {
+    height: calc(0.2 * 100vh);
+    padding: 10px;
+    background-image: linear-gradient(45deg, gray, gold, gold, gray);
+}
+
+.otherItems {
+    float: right;
+}
+
+.callToSignUp {
+    background-color: white;
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 5px 20px;
+    width: 100%;
+}
+
+.content {
+    min-height: calc(0.7 * 100vh);
+}
+
+.footer {
+    height: calc(0.05 * 100vh);
+    background-image: linear-gradient(45deg, gray, gold, gold, gray);
+    position: fixed;
+    bottom: 0;
+    width: 80%;
+    --bs-gutter: 0;
+    line-height: 80px;
+    font-weight: 600;
+}
