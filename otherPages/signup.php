@@ -33,7 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Prepare a select statement
         if ($usertype == "students") {
-            //$sql1 = "SELECT a.id FROM auth_table a JOIN students s ON a.studentId = s.studentId WHERE a.username = ? AND s.email = ?";
             $sql1 = "SELECT id FROM auth_table WHERE username = ?";
             $sql2 = "SELECT id FROM students WHERE email = ?";
         } else {
@@ -252,7 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span class="invalid-feedback"><?php echo $usertype_err; ?></span>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 70px;">
             <input type="submit" class="btn btn-primary" value="Submit">
             <input type="reset" class="btn btn-secondary ml-2" value="Reset">
         </div>

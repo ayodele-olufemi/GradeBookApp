@@ -7,6 +7,13 @@ if ($local == false) {
     $docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/~ics325sp2409/";
 }
 require_once($path . "/includes/config.php");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    session_start();
+    $_SESSION = array();
+    session_destroy();
+    header("location: " . $docRoot . "index.php");
+}
 ?>
 
 <head>
@@ -25,5 +32,19 @@ require_once($path . "/includes/config.php");
         <a href="<?= $docRoot ?>index.php">
             <img src="<?= $docRoot ?>images/G-oneLogo.png" class="g_one_logo" alt="G-One Logo">
         </a>
+        <div class="profile_area">
+            <div class="profilePicture">
+                <img src="<?= $docRoot ?>images/defaultProfilePics.png" class="g_one_logo" alt="profile picture" />
+            </div>
+            <div class="p_texts">
+                <p class="user_name"><?php echo htmlspecialchars($firstname) . " " . htmlspecialchars($lastname) ?></p>
+                <a href="<?= $docRoot ?> otherPages/profile.php">Edit Profile</a>
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                    <input type="submit" class="btn btn-danger" value="Logout">
+                </form>
+
+            </div>
+
+        </div>
     </div>
     <hr>

@@ -6,20 +6,7 @@ $docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/";
 if ($local == false) {
     $docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/~ics325sp2409/";
 }
-
-// Initialize the session
-session_start();
-
-// Check if the user is already logged in. Change header to headerLoggedIn.php
-if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-    if (isset($_SESSION["usertype"])) {
-        if ($_SESSION["usertype"] == "student") {
-            header("location: welcomeStudent.php");
-        } else if ($_SESSION["usertype"] == "professor") {
-            header("location: welcomeProfessor.php");
-        }
-    }
-}
+require_once($path . "/includes/config.php");
 ?>
 
 <head>

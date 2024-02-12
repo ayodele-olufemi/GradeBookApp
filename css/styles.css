@@ -1,35 +1,55 @@
 body {
     width: 80%;
     margin: auto;
-    padding: 0 20px 20px 20px;
+    padding: 0 20px;
 }
 
 .g_one_logo {
     height: calc(0.15 * 100vh);
     margin-top: 1.5rem;
+    border-radius: 10px;
 }
 .loginForm {
-    width: 100%;
+    width: 30rem;
     border: 3px solid black;
     text-align: center;
-    display: inline-block;
     border-radius: 10px;
     padding: 10px;
     margin-top: 1.5rem;
     background-color: gold;
+    padding-top: 20xp;
+    margin: 0 auto;
+}
+
+.profile_area {
+    float: right;
+}
+
+.profilePicture {
+    float: left;
+}
+
+.p_texts {
+    text-align: center;
+    float: right;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.p_texts form {
+    margin-top: 20px;;
+}
+
+.user_name {
+    font-size: larger;
+    font-weight: bold;
 }
 
 .loginForm label {
     width: 7rem;
     text-align: left;
-    font-weight:bold;
-}
-
-.loginForm button {
-    background-color: black;
-    color: white;
-    width: 5rem;
-    border-radius: 10px;
+    font-weight: bold;
 }
 
 .loginForm input {
@@ -43,29 +63,27 @@ body {
     background-image: linear-gradient(45deg, gray, gold, gold, gray);
 }
 
-.otherItems {
-    float: right;
-}
-
 .callToSignUp {
     background-color: white;
     border: 3px solid black;
     border-radius: 10px;
     padding: 5px 20px;
-    width: 100%;
+    width: 30rem;
+    margin: 0 auto;
 }
 
 .content {
-    min-height: calc(0.7 * 100vh);
+    min-height: calc(100vh - 110px - (0.2 * 100vh));
 }
 
 .footer {
-    height: calc(0.05 * 100vh);
     background-image: linear-gradient(45deg, gray, gold, gold, gray);
-    position: fixed;
-    bottom: 0;
-    width: 80%;
-    --bs-gutter: 0;
-    line-height: 80px;
     font-weight: 600;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#todaysDate, #copyright {
+    line-height: 50px;
+    display: inline-block;
 }

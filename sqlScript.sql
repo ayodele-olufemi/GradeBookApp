@@ -3,7 +3,8 @@ CREATE TABLE students (
     firstName VARCHAR(50) NOT NULL, 
     lastName VARCHAR(50) NOT NULL, 
     email VARCHAR(100) NOT NULL UNIQUE,
-    phone VARCHAR(20)
+    phone VARCHAR(20), 
+    photo LONGBLOB 
 );
 
 CREATE TABLE professors (

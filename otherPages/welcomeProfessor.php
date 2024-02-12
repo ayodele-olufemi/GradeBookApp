@@ -1,4 +1,5 @@
 <?php
+session_start();
 $local = true;
 $path = $_SERVER["DOCUMENT_ROOT"];
 
@@ -10,6 +11,7 @@ $header = $path . "/includes/headerLoggedIn.php";
 $footer = $path . "/includes/footer.php";
 
 include($header);
+
 ?>
 <div class="content">
     <h1>Professor Welcome Page</h1>
