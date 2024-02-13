@@ -2,6 +2,7 @@
 session_start();
 $local = true;
 $path = $_SERVER["DOCUMENT_ROOT"];
+$docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/";
 
 if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
@@ -12,12 +13,17 @@ $footer = $path . "/includes/footer.php";
 
 require_once($path . "/includes/config.php");
 
+// Check if the user is not logged in. Send them to index page
+if (!isset($_SESSION["loggedin"])) {
+    header("location: " . $docRoot . "index.php");
+    exit();
+}
+
 // declare variables 
-$firstname = $lastname = $email = "";
 $studentId = $_SESSION['studentId'];
 
 //prepare sql to get student details
-$sql1 = "SELECT firstName, lastName, email FROM students WHERE id = ?";
+$sql1 = "SELECT firstName, lastName, email, phone FROM students WHERE id = ?";
 
 if ($stmt = mysqli_prepare($db, $sql1)) {
     mysqli_stmt_bind_param($stmt, "i", $param_studentId);
@@ -26,11 +32,12 @@ if ($stmt = mysqli_prepare($db, $sql1)) {
 
     if (mysqli_stmt_execute($stmt)) {
         mysqli_stmt_store_result($stmt);
-        mysqli_stmt_bind_result($stmt, $first_name, $last_name, $e_mail);
+        mysqli_stmt_bind_result($stmt, $first_name, $last_name, $e_mail, $phone);
         if (mysqli_stmt_fetch($stmt)) {
-            $firstname = $first_name;
-            $lastname = $last_name;
-            $email = $e_mail;
+            $_SESSION["firstName"] = $first_name;
+            $_SESSION["lastName"] = $last_name;
+            $_SESSION["email"] = $e_mail;
+            $_SESSION["phone"] = $phone;
         }
     } else {
         echo "Oops! Something went wrong. Please try again later.";
@@ -50,11 +57,17 @@ include($header);
 ?>
 <div class="content">
     <h1>Student Welcome Page</h1>
+    <section>
+        <h2>Registered Classes</h2>
+    </section>
+    <section>
+        <h2>Available Classes</h2>
+    </section>
+
     <?php
     if (isset($_SESSION["studentId"])) {
         echo "<p>The StudentId is " . $_SESSION['studentId'] . "</p>";
     }
-
     ?>
 </div>
 <?php

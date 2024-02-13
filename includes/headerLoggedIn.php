@@ -8,11 +8,11 @@ if ($local == false) {
 }
 require_once($path . "/includes/config.php");
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST["logoutBtn"])) {
     session_start();
-    $_SESSION = array();
     session_destroy();
-    header("location: " . $docRoot . "index.php");
+    $_SESSION = array();
+    header("location:" . $docRoot . "index.php");
 }
 ?>
 
@@ -37,10 +37,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <img src="<?= $docRoot ?>images/defaultProfilePics.png" class="g_one_logo" alt="profile picture" />
             </div>
             <div class="p_texts">
-                <p class="user_name"><?php echo htmlspecialchars($firstname) . " " . htmlspecialchars($lastname) ?></p>
-                <a href="<?= $docRoot ?> otherPages/profile.php">Edit Profile</a>
+                <p class="user_name"><?php echo htmlspecialchars($_SESSION["firstName"]) . " " . htmlspecialchars($_SESSION["lastName"]) ?></p>
+                <a href="<?= $docRoot ?>otherPages/profile.php">Profile & Settings</a>
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                    <input type="submit" class="btn btn-danger" value="Logout">
+                    <input type="submit" class="btn btn-danger" name="logoutBtn" value="Logout">
                 </form>
 
             </div>
