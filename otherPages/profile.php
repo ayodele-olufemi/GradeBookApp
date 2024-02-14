@@ -21,93 +21,121 @@ if (!isset($_SESSION["loggedin"])) {
 // Handle changing of profile picture
 $upload_err = "";
 
+
 include($header);
 
-if (isset($_POST["upload"]) && !empty($_FILES["uploadPics"]["tmp_name"])) {
-    $upload_err = "";
-    $target_dir = $path . "/uploads/"; // Directory where the images will be stored
-    $target_file = $target_dir . basename($_FILES["uploadPics"]["name"]);
-    $targetfile = basename($_FILES["uploadPics"]["name"]);
-    $upload_ok = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    // Check if image file is a actual image or fake image
-    $check = getimagesize($_FILES["uploadPics"]["tmp_name"]);
-    if ($check !== false) {
-        //echo "File is an image - " . $check["mime"] . ".";
+if (isset($_POST["upload"])) {
+    if (empty($_FILES["uploadPics"]["tmp_name"])) {
+        $upload_err = "Please select a file to upload.";
+    } else {
+        $upload_err = "";
+        $target_dir = $path . "/uploads/"; // Directory where the images will be stored
+        $target_file = $target_dir . basename($_FILES["uploadPics"]["name"]);
+        $targetfile = basename($_FILES["uploadPics"]["name"]);
         $upload_ok = 1;
-    } else {
-        $upload_err .= "File is not an image.";
-        $upload_ok = 0;
-    }
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        echo "Sorry, file already exists.";
-        $upload_ok = 0;
-    }
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["uploadPics"]["tmp_name"]);
+        if ($check !== false) {
+            //echo "File is an image - " . $check["mime"] . ".";
+            $upload_ok = 1;
+        } else {
+            $upload_err .= "File is not an image. ";
+            $upload_ok = 0;
+        }
 
-    // Check file size
-    if ($_FILES["uploadPics"]["size"] > 500000) {
-        $upload_err .=  "Sorry, your file is too large.";
-        $upload_ok = 0;
-    }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+            $upload_err .= "Sorry, file already exists. ";
+            $upload_ok = 0;
+        }
 
-    // Allow certain file formats
-    if (
-        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif"
-    ) {
-        $upload_err .=  "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $upload_ok = 0;
-    }
+        // Check file size
+        if ($_FILES["uploadPics"]["size"] > 500000) {
+            $upload_err .=  "Sorry, your file is too large. ";
+            $upload_ok = 0;
+        }
 
-    // Check if $upload_ok is set to 0 by an error
-    if ($upload_ok == 0) {
-        $upload_err .= "Sorry, your file was not uploaded.";
-    } else {
-        if (move_uploaded_file($_FILES["uploadPics"]["tmp_name"], $target_file)) {
-            echo "The file " . basename($_FILES["uploadPics"]["name"]) . " has been uploaded.";
+        // Allow certain file formats
+        if (
+            $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif"
+        ) {
+            $upload_err .=  "Sorry, only JPG, JPEG, PNG & GIF files are allowed. ";
+            $upload_ok = 0;
+        }
 
-            // Update the user's profile picture URL in the database
-            if ($_SESSION["usertype"] == "student") {
-                $studentId = $_SESSION["studentId"];
-                // Prepare an update statement
-                $sql = "UPDATE students SET photoUrl = '$targetfile' WHERE id = $studentId";
-                if (mysqli_query($db, $sql)) {
-                    echo "<h2 style='color: green'>Profile picture uploaded successfully!</h2>";
-                    $_SESSION["profilePicture"] = $targetfile;
-                    header("location:" . $docRoot . "otherPages/profile.php");
+        // Check if $upload_ok is set to 0 by an error
+        if ($upload_ok == 0) {
+            $upload_err .= "Sorry, your file was not uploaded.";
+        } else {
+            if (move_uploaded_file($_FILES["uploadPics"]["tmp_name"], $target_file)) {
+                //echo "The file " . basename($_FILES["uploadPics"]["name"]) . " has been uploaded.";
+                // Update the user's profile picture URL in the database
+                if ($_SESSION["usertype"] == "student") {
+                    $studentId = $_SESSION["studentId"];
+                    // Prepare an update statement
+                    $sql = "UPDATE students SET photoUrl = '$targetfile' WHERE id = $studentId";
+                    if (mysqli_query($db, $sql)) {
+                        $_SESSION["profilePicture"] = $targetfile;
+                        $_SESSION["confirmationGood"] = "Profile picture uploaded successfully!";
+                        header("location:" . $docRoot . "otherPages/profile.php");
+                    } else {
+                        $_SESSION["confirmationBad"] = "Error updating profile picture: " . mysqli_error($db);
+                    }
                 } else {
-                    echo "<h2 style='color: red;'>Error updating profile picture: " . mysqli_error($db) . "</h2>";
+                    $professorId = $_SESSION["professorId"];
+                    // Prepare an update statement
+                    $sql = "UPDATE professors SET photoUrl = '$targetfile' WHERE id = $professorId";
+                    if (mysqli_query($db, $sql)) {
+                        echo "Profile picture updated successfully.";
+                        $_SESSION["profilePicture"] = $targetfile;
+                    } else {
+                        $upload_err =  "Error updating profile picture: " . mysqli_error($db);
+                    }
                 }
             } else {
-                $professorId = $_SESSION["professorId"];
-                // Prepare an update statement
-                $sql = "UPDATE professors SET photoUrl = '$targetfile' WHERE id = $professorId";
-                if (mysqli_query($db, $sql)) {
-                    echo "Profile picture updated successfully.";
-                    $_SESSION["profilePicture"] = $targetfile;
-                } else {
-                    $upload_err =  "Error updating profile picture: " . mysqli_error($db);
-                }
+                $_SESSION["confirmationBad"] =  "Sorry, there was an error uploading your file.";
             }
-        } else {
-            $upload_err =  "Sorry, there was an error uploading your file.";
         }
     }
 }
 
 if (isset($_POST["returnHome"])) {
     if ($_SESSION["usertype"] == "student") {
+        if (isset($_SESSION["confirmationGood"])) {
+            unset($_SESSION["confirmationGood"]);
+        }
+        if (isset($_SESSION["confirmationBad"])) {
+            unset($_SESSION["confirmationBad"]);
+        }
         header("location: " . $docRoot . "otherPages/welcomeStudent.php");
     } else {
+        if (isset($_SESSION["confirmationGood"])) {
+            unset($_SESSION["confirmationGood"]);
+        }
+        if (isset($_SESSION["confirmationBad"])) {
+            unset($_SESSION["confirmationBad"]);
+        }
         header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
     }
 }
 
 ?>
 <div class="content">
+    <div class="confirmation" style="margin-bottom: 2rem;">
+        <h2 style="color: red">
+            <?php if (isset($_SESSION["confirmationBad"])) {
+                echo htmlspecialchars($_SESSION["confirmationBad"]);
+            }  ?>
+        </h2>
+        <h2 style="color: green">
+            <?php if (isset($_SESSION["confirmationGood"])) {
+                echo htmlspecialchars($_SESSION["confirmationGood"]);
+            } ?>
+        </h2>
+    </div>
     <h1>Profile Page</h1>
     <div class="profilePageSections">
         <section>

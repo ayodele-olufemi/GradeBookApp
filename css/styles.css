@@ -24,6 +24,10 @@ body {
     margin: 0 auto;
 }
 
+.loginForm span {
+    margin-left: 1.5rem;
+}
+
 .profile_area {
     float: right;
 }
