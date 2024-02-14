@@ -23,7 +23,7 @@ if (!isset($_SESSION["loggedin"])) {
 $studentId = $_SESSION['studentId'];
 
 //prepare sql to get student details
-$sql1 = "SELECT firstName, lastName, email, phone FROM students WHERE id = ?";
+$sql1 = "SELECT firstName, lastName, email, phone, photoUrl FROM students WHERE id = ?";
 
 if ($stmt = mysqli_prepare($db, $sql1)) {
     mysqli_stmt_bind_param($stmt, "i", $param_studentId);
@@ -32,12 +32,13 @@ if ($stmt = mysqli_prepare($db, $sql1)) {
 
     if (mysqli_stmt_execute($stmt)) {
         mysqli_stmt_store_result($stmt);
-        mysqli_stmt_bind_result($stmt, $first_name, $last_name, $e_mail, $phone);
+        mysqli_stmt_bind_result($stmt, $first_name, $last_name, $e_mail, $phone, $photoUrl);
         if (mysqli_stmt_fetch($stmt)) {
             $_SESSION["firstName"] = $first_name;
             $_SESSION["lastName"] = $last_name;
             $_SESSION["email"] = $e_mail;
             $_SESSION["phone"] = $phone;
+            $_SESSION["profilePicture"] = $photoUrl;
         }
     } else {
         echo "Oops! Something went wrong. Please try again later.";

@@ -27,7 +27,8 @@ $username = $password = "";
 $username_err = $password_err = $login_err = "";
 
 // Processing form data when form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST["loginBtn"])) {
 
     // Check if username is empty
     if (empty(trim($_POST["username"]))) {
@@ -128,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span class="invalid-feedback"><?php echo $password_err; ?></span>
 
             <p>Forgot your password? Click <a href="<?= $docRoot ?>otherPages/resetpassword.php">here</a> to reset it.</p>
-            <input type="submit" class="btn btn-primary" value="Login">
+            <input type="submit" name="loginBtn" class="btn btn-primary" value="Login">
         </form>
     </div>
     <div class="callToSignUp">

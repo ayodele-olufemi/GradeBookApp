@@ -14,6 +14,10 @@ if (isset($_POST["logoutBtn"])) {
     $_SESSION = array();
     header("location:" . $docRoot . "index.php");
 }
+
+
+
+
 ?>
 
 <head>
@@ -34,7 +38,7 @@ if (isset($_POST["logoutBtn"])) {
         </a>
         <div class="profile_area">
             <div class="profilePicture">
-                <img src="<?= $docRoot ?>images/defaultProfilePics.png" class="g_one_logo" alt="profile picture" />
+                <img class="g_one_logo " src="<?= $docRoot . "uploads/" ?><?php echo htmlspecialchars($_SESSION["profilePicture"]); ?>" alt="profile_pics">
             </div>
             <div class="p_texts">
                 <p class="user_name"><?php echo htmlspecialchars($_SESSION["firstName"]) . " " . htmlspecialchars($_SESSION["lastName"]) ?></p>

@@ -14,7 +14,7 @@ CREATE TABLE students (
     lastName VARCHAR(50) NOT NULL, 
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(20), 
-    photoUrl VARCHAR(255) DEFAULT 'default.jpg'
+    photoUrl VARCHAR(255) DEFAULT 'default.png'
 );
 
 CREATE TABLE professors (
@@ -23,7 +23,7 @@ CREATE TABLE professors (
     lastName VARCHAR(50) NOT NULL, 
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(20) NULL,
-    photoUrl VARCHAR(255) DEFAULT 'default.jpg'
+    photoUrl VARCHAR(255) DEFAULT 'default.png'
 );
 
 CREATE TABLE auth_table (
