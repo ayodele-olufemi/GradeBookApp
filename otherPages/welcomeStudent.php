@@ -13,7 +13,7 @@ $footer = $path . "/includes/footer.php";
 
 require_once($path . "/includes/config.php");
 
-// Check if the user is not logged in. Send them to index page
+// Check if the user is not logged in. Send them to index/login page
 if (!isset($_SESSION["loggedin"])) {
     header("location: " . $docRoot . "index.php");
     exit();
@@ -50,7 +50,10 @@ if ($stmt = mysqli_prepare($db, $sql1)) {
 
 //prepare sql to get course available for registration
 
-
+//TESTING CODE -- PRINT $_SESSION
+foreach ($_SESSION as $a => $b) {
+    echo $a . " => " . $b . " ";
+}
 
 include($header);
 
