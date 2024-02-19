@@ -92,20 +92,19 @@ ALTER TABLE grades ADD FOREIGN KEY (gradeItemId) REFERENCES grade_items(id);
 DROP VIEW IF EXISTS vw_studentEnrollments;
 
 CREATE VIEW vw_studentEnrollments AS
-SELECT s.id AS `studentId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`, e.enrollment_status AS `enrollStatus`
+SELECT e.id AS `enrollId`, s.id AS `studentId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`, e.enrollment_status AS `enrollStatus`
 FROM students s INNER JOIN enrollments e                ON s.id = e.studentId
                 INNER JOIN course_assignments ca        ON e.courseAssignmentId = ca.id
                 INNER JOIN professors p                 ON ca.professorId = p.id
-                INNER JOIN courses c                    ON ca.courseId = c.id
-GROUP BY s.id;
+                INNER JOIN courses c                    ON ca.courseId = c.id;
 
 -- View to see all classes available for enrollment
 DROP VIEW IF EXISTS vw_availableEnrollments;
 
 CREATE VIEW vw_availableEnrollments AS
-SELECT c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`
+SELECT ca.id AS `caId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`
 FROM course_assignments ca  INNER JOIN professors p on ca.professorId = p.id
-                            INNER JOIN courses c on ca.courseId = c.id
+                            INNER JOIN courses c on ca.courseId = c.id;
 
 /*
 DROP VIEW IF EXISTS vw_studentEnrollments;
@@ -258,27 +257,27 @@ INSERT INTO course_assignments (professorId, courseId) VALUES
 
 
 -- Insert into enrollments table
-INSERT INTO enrollments (studentId, courseAssignmentId, enrollment_status) VALUES 
-(1, 1, true),
-(2, 2, true),
-(3, 3, true),
-(4, 4, true),
-(5, 5, true),
-(6, 6, true),
-(7, 7, true),
-(8, 8, true),
-(9, 9, true),
-(10, 10, true),
-(11, 11, true),
-(12, 12, true),
-(13, 13, true),
-(14, 14, true),
-(15, 15, true),
-(16, 16, true),
-(17, 17, true),
-(18, 18, true),
-(19, 19, true),
-(20, 20, true);
+INSERT INTO enrollments (studentId, courseAssignmentId) VALUES 
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10),
+(11, 11),
+(12, 12),
+(13, 13),
+(14, 14),
+(15, 15),
+(16, 16),
+(17, 17),
+(18, 18),
+(19, 19),
+(20, 20);
 
 
 

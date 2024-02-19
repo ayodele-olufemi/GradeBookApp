@@ -19,6 +19,16 @@ if (!isset($_SESSION["loggedin"])) {
     exit();
 }
 
+
+if (isset($_SESSION["confirmationGood"]) || isset($_SESSION["confirmationBad"])) {
+    echo '<script type="text/Javascript">
+    setTimeout(() => {
+        document.querySelector(".confirmation").style.display="none";
+    }, 3000);
+    </script>';
+}
+
+
 // declare variables 
 $studentId = $_SESSION['studentId'];
 
@@ -26,10 +36,10 @@ $studentId = $_SESSION['studentId'];
 $sql1 = "SELECT firstName, lastName, email, phone, photoUrl FROM students WHERE id = ?";
 
 //prepare sql to get student enrollment details
-$sql2 = "SELECT studentId, courseId, courseTitle, courseDescription, profFirstName, profLastName, profEmail, enrollStatus FROM vw_studentEnrollments WHERE studentId = ?";
+$sql2 = "SELECT enrollId, studentId, courseId, courseTitle, courseDescription, profFirstName, profLastName, profEmail, enrollStatus FROM vw_studentEnrollments WHERE studentId = ?";
 
 //prepare sql to get course available for registration
-$sql3 = "SELECT courseId, courseTitle, courseDescription, profFirstName, profLastName, profEmail FROM vw_availableEnrollments WHERE courseId NOT IN (SELECT courseId from vw_studentEnrollments WHERE studentId = ?)";
+$sql3 = "SELECT caId, courseId, courseTitle, courseDescription, profFirstName, profLastName, profEmail FROM vw_availableEnrollments WHERE courseId NOT IN (SELECT courseId from vw_studentEnrollments WHERE studentId = ?)";
 
 // Execute sql to get student details
 if ($stmt1 = mysqli_prepare($db, $sql1)) {
@@ -76,6 +86,7 @@ if ($stmt2 = mysqli_prepare($db, $sql2)) {
             <tbody>";
             while ($row = mysqli_fetch_assoc($result)) {
                 $ee = $row['enrollStatus'] == 1 ? 'Enrolled' : 'Awaiting Approval';
+                $dis = $ee == 'Awaiting Approval' ? 'disabled' : '';
                 $enrollment .= "<tr>
                 <td>" . $row['courseId'] . "</td>
                 <td>" . $row['courseTitle'] . "</td>
@@ -83,7 +94,12 @@ if ($stmt2 = mysqli_prepare($db, $sql2)) {
                 <td>" . $row['profFirstName'] . " " . $row['profLastName'] . "</td>
                 <td>" . $row['profEmail'] . "</td>
                 <td>" . $ee . "</td>
-                <td><input type='submit' class='btn btn-success' value='Check Grade' name='checkGrade'> <input type='submit' class='btn btn-danger' value='Drop Class' name='dropClass'></td>
+                <td>
+                    <form action=" . htmlspecialchars($_SERVER['PHP_SELF']) . " method='post'>
+                        <input type='hidden' name='enrollId' value=" . $row['enrollId'] . ">
+                        <input type='submit' class='btn btn-success' value='Check Grade' name='checkGrade' " . $dis . "> <input type='submit' class='btn btn-danger' value='Drop Class' name='dropClass'>
+                    </form>
+                </td>
                 </tr>";
             }
             $enrollment .= "</tbody>
@@ -125,7 +141,12 @@ if ($stmt3 = mysqli_prepare($db, $sql3)) {
                 <td>" . $row['courseDescription'] . "</td>
                 <td>" . $row['profFirstName'] . " " . $row['profLastName'] . "</td>
                 <td>" . $row['profEmail'] . "</td>
-                <td><input type='submit' class='btn btn-primary' value='Enroll' name='enrollNow'></td>
+                <td>
+                    <form action=" . htmlspecialchars($_SERVER['PHP_SELF']) . " method='post'>
+                        <input type='hidden' name='caId' value=" . $row['caId'] . ">
+                        <input type='submit' class='btn btn-primary' value='Enroll' name='enrollNow'>
+                    </form>
+                </td>
                 </tr>";
             }
             $available .= "</tbody>
@@ -141,7 +162,19 @@ if ($stmt3 = mysqli_prepare($db, $sql3)) {
 }
 
 
-// function to enroll in a  class
+// function to enroll in a class
+if (isset($_POST["enrollNow"])) {
+    $courseAssignId = $_POST["caId"];
+    $sql1 = "INSERT INTO enrollments (studentId, courseAssignmentId) VALUES ('$studentId', '$courseAssignId')";
+
+    if (mysqli_query($db, $sql1)) {
+        $_SESSION["confirmationGood"] = "Class registered successfully!";
+        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+    } else {
+        $_SESSION["confirmationBad"] = "There was an error enrolling in the class, Please try again later.";
+        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+    }
+}
 
 // function to check grade
 
@@ -157,6 +190,18 @@ include($header);
 
 ?>
 <div class="content">
+    <div class="confirmation" style="margin-bottom: 2rem;">
+        <h2 style="color: red">
+            <?php if (isset($_SESSION["confirmationBad"])) {
+                echo htmlspecialchars($_SESSION["confirmationBad"]);
+            }  ?>
+        </h2>
+        <h2 style="color: green">
+            <?php if (isset($_SESSION["confirmationGood"])) {
+                echo htmlspecialchars($_SESSION["confirmationGood"]);
+            } ?>
+        </h2>
+    </div>
     <h1>Student Welcome Page</h1>
     <section>
         <h2>Registered Classes</h2>
