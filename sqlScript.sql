@@ -88,40 +88,35 @@ ALTER TABLE grade_items ADD FOREIGN KEY (courseAssignmentId) REFERENCES course_a
 ALTER TABLE grades ADD FOREIGN KEY (enrollmentId) REFERENCES enrollments(id);
 ALTER TABLE grades ADD FOREIGN KEY (gradeItemId) REFERENCES grade_items(id);
 
-/*
+-- View for student enrollment to see registered classes
+DROP VIEW IF EXISTS vw_studentEnrollments;
 
-DROP VIEW IF EXISTS;
-
-CREATE VIEW student_enrollment AS
-SELECT s.id, c.courseId, c.courseTitle, c.courseDescription, p.firstName, p.lastName, p.email, e.enrollment_status
+CREATE VIEW vw_studentEnrollments AS
+SELECT s.id AS `studentId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`, e.enrollment_status AS `enrollStatus`
 FROM students s INNER JOIN enrollments e                ON s.id = e.studentId
                 INNER JOIN course_assignments ca        ON e.courseAssignmentId = ca.id
                 INNER JOIN professors p                 ON ca.professorId = p.id
                 INNER JOIN courses c                    ON ca.courseId = c.id
 GROUP BY s.id;
 
-INSERT INTO auth_table (studentId, professorId, username, password_hash) VALUES 
-(1, NULL, 'john_doe', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 1, 'prof_smith', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(2, NULL, 'alice_smith', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 2, 'dr_johnson', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(3, NULL, 'michael_johnson', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 3, 'prof_brown', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(4, NULL, 'emily_brown', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 4, 'dr_martinez', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(5, NULL, 'daniel_taylor', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 5, 'prof_anderson', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(11, NULL, 'emma_gonzalez', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(12, NULL, 'james_wang', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(13, NULL, 'sophia_kim', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(14, NULL, 'william_chen', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(15, NULL, 'emily_liu', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 11, 'prof_gonzalez', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 12, 'prof_wang', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 13, 'prof_kim', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 14, 'prof_chen', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG'),
-(NULL, 15, 'prof_liu', '$2y$10$etD1bnpMWpdMnPdG0bGqTuwRDP2T1L7i4hze6DPAhbGqvvSDzlbzG');
+-- View to see all classes available for enrollment
+DROP VIEW IF EXISTS vw_availableEnrollments;
 
+CREATE VIEW vw_availableEnrollments AS
+SELECT c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`
+FROM course_assignments ca  INNER JOIN professors p on ca.professorId = p.id
+                            INNER JOIN courses c on ca.courseId = c.id
+
+/*
+DROP VIEW IF EXISTS vw_studentEnrollments;
+
+CREATE VIEW vw_studentEnrollments AS
+SELECT s.id AS `studentId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`, e.enrollment_status AS `enrollStatus`
+FROM students s INNER JOIN enrollments e                ON s.id = e.studentId
+                INNER JOIN course_assignments ca        ON e.courseAssignmentId = ca.id
+                INNER JOIN professors p                 ON ca.professorId = p.id
+                INNER JOIN courses c                    ON ca.courseId = c.id
+GROUP BY s.id;
 */
 
 
