@@ -6,13 +6,13 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerOthers.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerOthers.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
 include($header);
 
 // Include config file
-require_once($path . "/includes/config.php");
+require_once($path . "/GradeBookApp/includes/config.php");
 
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = $firstname = $lastname = $phone = $email = $usertype = "";

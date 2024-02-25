@@ -6,17 +6,17 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerOthers.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerOthers.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
 include($header);
 
 // Check if the user is already logged in. Change header to headerLoggedIn.php
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     if ($_SESSION["usertype"] == "student") {
-        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        header("location: " . $docRoot . "/otherPages/welcomeStudent.php");
     } else if ($_SESSION["usertype"] == "professor") {
-        header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
+        header("location: " . $docRoot . "/otherPages/welcomeProfessor.php");
     }
     exit;
 }
@@ -80,7 +80,7 @@ if (isset($_POST["loginBtn"])) {
                                 $_SESSION["studentId"] = (int)$studentId;
 
                                 // Redirect user to welcome page
-                                header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+                                header("location: " . $docRoot . "/otherPages/welcomeStudent.php");
                             } else {
                                 //user is professor
                                 $_SESSION["usertype"] = "professor";

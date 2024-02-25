@@ -2,16 +2,16 @@
 session_start();
 $local = true;
 $path = $_SERVER["DOCUMENT_ROOT"];
-$docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/";
+$docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/GradeBookApp";
 
 if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerLoggedIn.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerLoggedIn.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
-require_once($path . "/includes/config.php");
+require_once($path . "/GradeBookApp/includes/config.php");
 // Check if the user is not logged in. Send them to index page
 if (!isset($_SESSION["loggedin"])) {
     header("location: " . $docRoot . "index.php");
@@ -25,7 +25,7 @@ include($header);
 
 if (isset($_POST["upload"]) && !empty($_FILES["uploadPics"]["tmp_name"])) {
     $upload_err = "";
-    $target_dir = $path . "/uploads/"; // Directory where the images will be stored
+    $target_dir = $path . "/GradeBookApp/uploads/"; // Directory where the images will be stored
     $target_file = $target_dir . basename($_FILES["uploadPics"]["name"]);
     $targetfile = basename($_FILES["uploadPics"]["name"]);
     $upload_ok = 1;
@@ -77,7 +77,7 @@ if (isset($_POST["upload"]) && !empty($_FILES["uploadPics"]["tmp_name"])) {
                 if (mysqli_query($db, $sql)) {
                     echo "<h2 style='color: green'>Profile picture uploaded successfully!</h2>";
                     $_SESSION["profilePicture"] = $targetfile;
-                    header("location:" . $docRoot . "otherPages/profile.php");
+                    header("location:" . $docRoot . "/otherPages/profile.php");
                 } else {
                     echo "<h2 style='color: red;'>Error updating profile picture: " . mysqli_error($db) . "</h2>";
                 }
@@ -100,9 +100,9 @@ if (isset($_POST["upload"]) && !empty($_FILES["uploadPics"]["tmp_name"])) {
 
 if (isset($_POST["returnHome"])) {
     if ($_SESSION["usertype"] == "student") {
-        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        header("location: " . $docRoot . "/otherPages/welcomeStudent.php");
     } else {
-        header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
+        header("location: " . $docRoot . "/otherPages/welcomeProfessor.php");
     }
 }
 

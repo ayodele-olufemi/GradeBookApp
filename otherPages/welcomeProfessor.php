@@ -7,8 +7,8 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerLoggedIn.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerLoggedIn.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
 include($header);
 
