@@ -33,7 +33,7 @@ if (isset($_POST["logoutBtn"])) {
 
 <body>
     <div class="heading">
-        <a href="<?= $docRoot ?>index.php">
+        <a href="<?= $docRoot ?>/index.php">
             <img src="<?= $docRoot ?>/images/G-oneLogo.png" class="g_one_logo" alt="G-One Logo">
         </a>
         <div class="profile_area">
