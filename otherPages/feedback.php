@@ -21,11 +21,15 @@ if (!isset($_SESSION["loggedin"])) {
 
 // declare variables 
 $assignmentName  = htmlspecialchars($_GET['name']);
-$scores = explode('/', htmlspecialchars($_GET['score']));
 
-if (count($scores) == 2) {
-    $studentScore = $scores[0];
-    $maxScore = $scores[1];
+$studentScore = '';
+$maxScore = '';
+if (isset($_GET['score']) && strpos($_GET['score'], '/') !== false) {
+    $scores = explode('/', htmlspecialchars($_GET['score']));
+    if (count($scores) == 2) {
+        $studentScore = $scores[0];
+        $maxScore = $scores[1];
+    }
 }
 
 include($header);
@@ -36,8 +40,11 @@ include($header);
 <a href="<?php echo $docRoot; ?>/otherPages/assignmentsPage.php">< assignments</a>
 </div>
 <div class="content">
-    <h1>Feedback for <?= $assignmentName ?></h1>
-    <div class="feedback">
+    <?php if ($_SESSION["usertype"] == "professor"): ?>
+        <div class="feedback" contenteditable="true">
+    <?php else: ?>
+        <div class="feedback">
+    <?php endif; ?>
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sint enim doloribus, omnis eius magni voluptate dicta tempore alias, soluta tempora dolorem doloremque, cumque autem consequatur dolores illum voluptatum. Culpa, obcaecati.
         Eius ipsam nemo unde molestiae veniam perspiciatis provident officia voluptatum, corporis quis necessitatibus similique, molestias aut sequi odio quod! A, assumenda eligendi! Voluptatum molestias quisquam facere? Sit cumque officia ad?
         Quas repudiandae illum neque voluptatum laboriosam cum est odit voluptates voluptatem, vero reprehenderit dolor nesciunt molestiae, qui tenetur optio similique maiores nisi fuga expedita, omnis corporis suscipit enim quam? Saepe?

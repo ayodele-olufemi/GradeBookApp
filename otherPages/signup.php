@@ -188,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Close statement
             mysqli_stmt_close($stmt2);
             // Redirect to login page
-            header("refresh:5; url=" . $docRoot . "index.php");
+            header("refresh:5; url=" . $docRoot . "/index.php");
         }
     }
 
@@ -255,7 +255,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" class="btn btn-primary" value="Submit">
             <input type="reset" class="btn btn-secondary ml-2" value="Reset">
         </div>
-        <p>Already have an account? Click <a href="<?= $docRoot ?>index.php">here</a> to login.</p>
+        <p>Already have an account? Click <a href="<?= $docRoot ?>/index.php">here</a> to login.</p>
     </form>
 </div>
 <?php

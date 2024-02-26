@@ -87,7 +87,7 @@ if (isset($_POST["loginBtn"])) {
                                 $_SESSION["professorId"] = (int)$professorId;
 
                                 // Redirect user to welcome page
-                                header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
+                                header("location: " . $docRoot . "/otherPages/welcomeProfessor.php");
                             }
                         } else {
                             // Password is not valid, display a generic error message
@@ -133,7 +133,7 @@ if (isset($_POST["loginBtn"])) {
         </form>
     </div>
     <div class="callToSignUp">
-        <p>Don't have an account? Click <a href="<?= $docRoot ?>otherPages/signup.php">here</a> to create one now!</p>
+        <p>Don't have an account? Click <a href="<?= $docRoot ?>/otherPages/signup.php">here</a> to create one now!</p>
     </div>
     <div>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sint enim doloribus, omnis eius magni voluptate dicta tempore alias, soluta tempora dolorem doloremque, cumque autem consequatur dolores illum voluptatum. Culpa, obcaecati.
