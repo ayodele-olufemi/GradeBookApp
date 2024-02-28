@@ -44,6 +44,7 @@ CREATE TABLE courses (
 
 CREATE TABLE grade_categories (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+    courseAssignmentId INT NOT NULL,
     categoryName VARCHAR(50) NOT NULL, 
     maxObtainable INT NOT NULL
 );
@@ -61,19 +62,13 @@ CREATE TABLE enrollments (
     enrollment_status BOOLEAN DEFAULT false
 );
 
-
-CREATE TABLE grade_items (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
-    gradeItemName VARCHAR(50) NOT NULL, 
-    gradeCategoryId INT NOT NULL, 
-    courseAssignmentId INT NOT NULL
-);
-
 CREATE TABLE grades (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     enrollmentId INT NOT NULL, 
-    gradeItemId INT NOT NULL, 
-    score INT NOT NULL DEFAULT 0
+    gradeItemName VARCHAR(50) NOT NULL,
+    gradeCategoryId INT NOT NULL,
+    score INT NOT NULL DEFAULT 0,
+    initial BOOLEAN DEFAULT true
 );
 
 -- Add foreign key constraints 
@@ -81,12 +76,11 @@ ALTER TABLE auth_table ADD FOREIGN KEY (studentId) REFERENCES students(id);
 ALTER TABLE auth_table ADD FOREIGN KEY (professorId) REFERENCES professors(id);
 ALTER TABLE course_assignments ADD FOREIGN KEY (professorId) REFERENCES professors(id);
 ALTER TABLE course_assignments ADD FOREIGN KEY (courseId) REFERENCES courses(id);
+ALTER TABLE grade_categories ADD FOREIGN KEY (courseAssignmentId) REFERENCES course_assignments(id);
 ALTER TABLE enrollments ADD FOREIGN KEY (studentId) REFERENCES students(id);
 ALTER TABLE enrollments ADD FOREIGN KEY (courseAssignmentId) REFERENCES course_assignments(id);
-ALTER TABLE grade_items ADD FOREIGN KEY (gradeCategoryId) REFERENCES grade_categories(id);
-ALTER TABLE grade_items ADD FOREIGN KEY (courseAssignmentId) REFERENCES course_assignments(id);
 ALTER TABLE grades ADD FOREIGN KEY (enrollmentId) REFERENCES enrollments(id);
-ALTER TABLE grades ADD FOREIGN KEY (gradeItemId) REFERENCES grade_items(id);
+ALTER TABLE grades ADD FOREIGN KEY (gradeCategoryId) REFERENCES grade_categories(id);
 
 -- View for student enrollment to see registered classes
 DROP VIEW IF EXISTS vw_studentEnrollments;
@@ -106,20 +100,20 @@ SELECT ca.id AS `caId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`
 FROM course_assignments ca  INNER JOIN professors p on ca.professorId = p.id
                             INNER JOIN courses c on ca.courseId = c.id;
 
-/*
-DROP VIEW IF EXISTS vw_studentEnrollments;
 
-CREATE VIEW vw_studentEnrollments AS
-SELECT s.id AS `studentId`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, c.courseDescription AS `courseDescription`, p.firstName AS `profFirstName`, p.lastName AS `profLastName`, p.email AS `profEmail`, e.enrollment_status AS `enrollStatus`
-FROM students s INNER JOIN enrollments e                ON s.id = e.studentId
-                INNER JOIN course_assignments ca        ON e.courseAssignmentId = ca.id
-                INNER JOIN professors p                 ON ca.professorId = p.id
-                INNER JOIN courses c                    ON ca.courseId = c.id
-GROUP BY s.id;
-*/
+-- View to see all grades
+/* DROP VIEW IF EXISTS vw_allGrades;
 
-
-
+CREATE VIEW vw_allGrades AS
+SELECT e.enrollmentId AS `enrollmentId`, s.firstName AS `studentsFirstName` , s.lastName AS `studentsLastName`, p.firstName AS `professorsFirstName`, p.lastName AS `professorsLastName`, c.courseId AS `courseId`, c.courseTitle AS `courseTitle`, gc.categoryName AS `gradeCategory`, gi.gradeItemName AS `gradeItemName`, gc.maxObtainable AS `maxObtainable`, g.score AS `score`
+FROM grades g   INNER JOIN grade_items gi ON g.gradeItemId = gi.id
+				INNER JOIN grade_categories gc ON gi.gradeCategoryId = gc.id
+                INNER JOIN enrollments e ON g.enrollmentId = e.id
+                INNER JOIN course_assignments ca ON gi.courseAssignmentId = ca.id
+                INNER JOIN courses c ON ca.courseId = c.id
+                INNER JOIN students s ON e.studentId = s.id
+                INNER JOIN professors p ON ca.professorId = p.id
+ORDER BY s.firstName, s.lastName, c.courseId, gc.categoryName, gi.gradeItemName; */
 -- Insert into students table
 INSERT INTO students (firstName, lastName, email, phone) VALUES 
 ('John', 'Doe', 'john.doe@example.com', '123-456-7890'),
@@ -217,20 +211,6 @@ INSERT INTO courses (courseId, courseTitle, courseDescription) VALUES
 ('SOC101', 'Introduction to Sociology', 'An overview of sociological concepts and theories.');
 
 
--- Insert into grade_categories table
-INSERT INTO grade_categories (categoryName, maxObtainable) VALUES
-('Homework', 100),
-('Quizzes', 50),
-('Midterm', 200),
-('Final Exam', 300),
-('Projects', 150),
-('Participation', 50),
-('Lab Reports', 100),
-('Essays', 100),
-('Presentations', 150),
-('Attendance', 50);
-
-
 -- Insert into course_assignments table
 INSERT INTO course_assignments (professorId, courseId) VALUES 
 (1, 1),
@@ -254,6 +234,19 @@ INSERT INTO course_assignments (professorId, courseId) VALUES
 (19, 19),
 (20, 20);
 
+
+-- Insert into grade_categories table
+/* INSERT INTO grade_categories (courseAssignmentId, categoryName, maxObtainable) VALUES
+(1, 'Homework', 100),
+(2, 'Quizzes', 50),
+(3, 'Midterm', 200),
+(4, 'Final Exam', 300),
+(5, 'Projects', 150),
+(1, 'Participation', 50),
+(2, 'Lab Reports', 100),
+(3, 'Essays', 100),
+(4, 'Presentations', 150),
+(5, 'Attendance', 50); */
 
 
 -- Insert into enrollments table
@@ -282,7 +275,7 @@ INSERT INTO enrollments (studentId, courseAssignmentId) VALUES
 
 
 -- Insert into grade_items table
-INSERT INTO grade_items (gradeItemName, gradeCategoryId, courseAssignmentId)
+/* INSERT INTO grade_items (gradeItemName, gradeCategoryId, courseAssignmentId)
 SELECT CONCAT(gc.categoryName, ' ', (FLOOR(RAND() * 10) + 1)) AS gradeItemName,
        gc.id AS gradeCategoryId,
        (FLOOR(RAND() * 10) + 1) AS courseAssignmentId
@@ -294,12 +287,12 @@ CROSS JOIN (
     ) AS nums
 ) AS rand_nums
 LIMIT 50;
-
+ */
 
 -- Insert into grades table
-INSERT INTO grades (enrollmentId, gradeItemId, score)
+/* INSERT INTO grades (enrollmentId, gradeItemId, score)
 SELECT e.id AS enrollmentId, gi.id AS gradeItemId, FLOOR(RAND() * 101) AS score
 FROM enrollments e
 CROSS JOIN grade_items gi
 ORDER BY RAND()
-LIMIT 200;
+LIMIT 200; */
