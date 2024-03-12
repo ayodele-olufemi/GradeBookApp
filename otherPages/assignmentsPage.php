@@ -59,15 +59,15 @@ include($header);
         </td>
         <td class="uploadStatus">
             <div>
-                <a href="">not submitted</a>
+                <a href="">1 submission(s)</a>
             </div>
         </td>
         <td class="score">
-            <div>- / -</div>
+            <div>15 / 15</div>
         </td>
         <td class="feedback">
             <div>
-                <a href="<?php $docRoot?>/GradeBookApp/otherPages/feedback.php"></a>
+                <a href="<?php echo $docRoot; ?>/otherPages/feedback.php?name=Assignment+1&score=15/15">unread</a>
             </div>
         </td>
     </tr>
@@ -80,15 +80,15 @@ include($header);
         </td>
         <td class="uploadStatus">
             <div>
-                <a href="">not submitted</a>
+                <a href="">3 submission(s)</a>
             </div>
         </td>
         <td class="score">
-            <div>- / -</div>
+            <div>85 / 100</div>
         </td>
         <td class="feedback">
             <div>
-                <a href="<?php $docRoot?>/GradeBookApp/otherPages/feedback.php"></a>
+                <a href="<?php echo $docRoot; ?>/otherPages/feedback.php?name=Assignment+2&score=85/100">unread</a>
             </div>
         </td>
     </tr>
@@ -109,7 +109,7 @@ include($header);
         </td>
         <td class="feedback">
             <div>
-                <a href="<?php $docRoot?>/GradeBookApp/otherPages/feedback.php"></a>
+                <a href=""></a>
             </div>
         </td>
     </tr>
