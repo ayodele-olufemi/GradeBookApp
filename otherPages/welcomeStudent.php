@@ -133,6 +133,7 @@ if ($stmt3 = mysqli_prepare($db, $sql3)) {
                     <th>Contact</th>
                     <th>Actions</th>
                 </tr>
+                </thead>
             <tbody>";
             while ($row = mysqli_fetch_assoc($result)) {
                 $available .= "<tr>
@@ -150,7 +151,6 @@ if ($stmt3 = mysqli_prepare($db, $sql3)) {
                 </tr>";
             }
             $available .= "</tbody>
-                        </thead>
                     </table>";
         } else {
             $available = "There are currently no classes available. Please check again later.";
@@ -176,14 +176,36 @@ if (isset($_POST["enrollNow"])) {
     }
 }
 
-// function to check grade
 
+// function to drop class
+if (isset($_POST["dropClass"])) {
+    $enrollId = $_POST["enrollId"];
+    $sql1 = "DELETE FROM grades WHERE enrollmentId = $enrollId";
+    $sql2 = "DELETE FROM enrollments WHERE id = $enrollId";
+
+    if (mysqli_query($db, $sql1)) {
+        if (mysqli_query($db, $sql2)) {
+            $_SESSION["confirmationGood"] = "Class dropped successfully!";
+            header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        } else {
+            $_SESSION["confirmationBad"] = "There was an error dropping the class, Please try again later.";
+            header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        }
+    }
+}
+
+
+// function to check grade
+if (isset($_POST["checkGrade"])) {
+    $_SESSION['currentCourse'] = $_POST["enrollId"];
+    header("location: " . $docRoot . "otherPages/gradesStudentView.php");
+}
 
 
 //TESTING CODE -- PRINT $_SESSION
-foreach ($_SESSION as $a => $b) {
+/* foreach ($_SESSION as $a => $b) {
     echo $a . " => " . $b . " ";
-}
+} */
 
 include($header);
 
