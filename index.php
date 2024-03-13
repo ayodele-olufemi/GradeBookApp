@@ -113,6 +113,9 @@ if (isset($_POST["loginBtn"])) {
 ?>
 <div class="content">
     <h1>Home Page</h1>
+    <h2>For testing purposes only!</h2>
+    <p>Student username: test password: testtesttest</p>
+    <p>Professor username: professortest password: testtesttest</p>
     <div class="loginForm">
         <?php
         if (!empty($login_err)) {
