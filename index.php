@@ -6,17 +6,17 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerOthers.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerOthers.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
 include($header);
 
 // Check if the user is already logged in. Change header to headerLoggedIn.php
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     if ($_SESSION["usertype"] == "student") {
-        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        header("location: " . $docRoot . "/otherPages/welcomeStudent.php");
     } else if ($_SESSION["usertype"] == "professor") {
-        header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
+        header("location: " . $docRoot . "/otherPages/welcomeProfessor.php");
     }
     exit;
 }
@@ -80,14 +80,14 @@ if (isset($_POST["loginBtn"])) {
                                 $_SESSION["studentId"] = (int)$studentId;
 
                                 // Redirect user to welcome page
-                                header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+                                header("location: " . $docRoot . "/otherPages/welcomeStudent.php");
                             } else {
                                 //user is professor
                                 $_SESSION["usertype"] = "professor";
                                 $_SESSION["professorId"] = (int)$professorId;
 
                                 // Redirect user to welcome page
-                                header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
+                                header("location: " . $docRoot . "/otherPages/welcomeProfessor.php");
                             }
                         } else {
                             // Password is not valid, display a generic error message
@@ -113,6 +113,9 @@ if (isset($_POST["loginBtn"])) {
 ?>
 <div class="content">
     <h1>Home Page</h1>
+    <h2>For testing purposes only!</h2>
+    <p>Student username: test password: testtesttest</p>
+    <p>Professor username: professortest password: testtesttest</p>
     <div class="loginForm">
         <?php
         if (!empty($login_err)) {
@@ -135,7 +138,7 @@ if (isset($_POST["loginBtn"])) {
         </form>
     </div>
     <div class="callToSignUp">
-        <p>Don't have an account? Click <a href="<?= $docRoot ?>otherPages/signup.php">here</a> to create one now!</p>
+        <p>Don't have an account? Click <a href="<?= $docRoot ?>/otherPages/signup.php">here</a> to create one now!</p>
     </div>
     <div>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sint enim doloribus, omnis eius magni voluptate dicta

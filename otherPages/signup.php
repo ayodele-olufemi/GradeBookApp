@@ -6,13 +6,13 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerOthers.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerOthers.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
 include($header);
 
 // Include config file
-require_once($path . "/includes/config.php");
+require_once($path . "/GradeBookApp/includes/config.php");
 
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = $firstname = $lastname = $phone = $email = $usertype = "";
@@ -188,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Close statement
             mysqli_stmt_close($stmt2);
             // Redirect to login page
-            header("refresh:5; url=" . $docRoot . "index.php");
+            header("refresh:5; url=" . $docRoot . "/index.php");
         }
     }
 
@@ -255,7 +255,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" class="btn btn-primary" value="Submit">
             <input type="reset" class="btn btn-secondary ml-2" value="Reset">
         </div>
-        <p>Already have an account? Click <a href="<?= $docRoot ?>index.php">here</a> to login.</p>
+        <p>Already have an account? Click <a href="<?= $docRoot ?>/index.php">here</a> to login.</p>
     </form>
 </div>
 <?php

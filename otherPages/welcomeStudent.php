@@ -2,20 +2,20 @@
 session_start();
 $local = true;
 $path = $_SERVER["DOCUMENT_ROOT"];
-$docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/";
+$docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/GradeBookApp";
 
 if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerLoggedIn.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerLoggedIn.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
-require_once($path . "/includes/config.php");
+require_once($path . "/GradeBookApp/includes/config.php");
 
 // Check if the user is not logged in. Send them to index/login page
 if (!isset($_SESSION["loggedin"])) {
-    header("location: " . $docRoot . "index.php");
+    header("location: " . $docRoot . "GradeBookApp/");
     exit();
 }
 
@@ -169,10 +169,10 @@ if (isset($_POST["enrollNow"])) {
 
     if (mysqli_query($db, $sql1)) {
         $_SESSION["confirmationGood"] = "Class registered successfully!";
-        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        header("location: " . $docRoot . "GradeBookApp/otherPages/welcomeStudent.php");
     } else {
         $_SESSION["confirmationBad"] = "There was an error enrolling in the class, Please try again later.";
-        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        header("location: " . $docRoot . "GradeBookApp/otherPages/welcomeStudent.php");
     }
 }
 
@@ -225,6 +225,11 @@ include($header);
         </h2>
     </div>
     <h1>Student Welcome Page</h1>
+    <section>
+        <h2>
+            <a href="/GradeBookApp/otherPages/assignmentsPage.php">Assignments</a>
+        </h2>
+    </section>
     <section>
         <h2>Registered Classes</h2>
         <div class="registeredClasses">

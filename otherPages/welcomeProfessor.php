@@ -8,8 +8,8 @@ if ($local == false) {
     $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
 }
 
-$header = $path . "/includes/headerLoggedIn.php";
-$footer = $path . "/includes/footer.php";
+$header = $path . "/GradeBookApp/includes/headerLoggedIn.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
 require_once($path . "/includes/config.php");
 
@@ -90,6 +90,7 @@ include($header);
     <?php
     echo "<p>The ProfessorId is " . $_SESSION["professorId"] . "</p>";
     ?>
+
     <table class='table table-primary table-striped table-hover'>
         <thead>
             <tr>
@@ -174,6 +175,13 @@ include($header);
             </tr>
         </tbody>
     </table>
+
+    <section>
+        <h2>
+            <a href="/GradeBookApp/otherPages/professorAssignmentsPage.php">Assignments</a>
+        </h2>
+    </section>
+
 </div>
 <?php
 include($footer);
