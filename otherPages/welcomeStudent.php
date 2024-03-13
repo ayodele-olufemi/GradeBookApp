@@ -133,6 +133,7 @@ if ($stmt3 = mysqli_prepare($db, $sql3)) {
                     <th>Contact</th>
                     <th>Actions</th>
                 </tr>
+                </thead>
             <tbody>";
             while ($row = mysqli_fetch_assoc($result)) {
                 $available .= "<tr>
@@ -150,7 +151,6 @@ if ($stmt3 = mysqli_prepare($db, $sql3)) {
                 </tr>";
             }
             $available .= "</tbody>
-                        </thead>
                     </table>";
         } else {
             $available = "There are currently no classes available. Please check again later.";

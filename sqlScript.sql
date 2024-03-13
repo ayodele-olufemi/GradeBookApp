@@ -39,7 +39,8 @@ CREATE TABLE courses (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     courseId VARCHAR(10) NOT NULL, 
     courseTitle VARCHAR(50) NOT NULL, 
-    courseDescription VARCHAR(255) NOT NULL
+    courseDescription VARCHAR(255) NOT NULL,
+    credits INT NOT NULL
 );
 
 CREATE TABLE grade_categories (

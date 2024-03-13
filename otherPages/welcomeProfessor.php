@@ -34,6 +34,8 @@ $professorId = $_SESSION['professorId'];
 //prepare sql to get professor details
 $sql1 = "SELECT firstName, lastName, email, phone, photoUrl FROM professors WHERE id = ?";
 
+//prepare sql to get my courses
+$sql2 = "SELECT c.courseId, c.courseTitle, COUNT";
 
 
 // Execute sql to get professor details
@@ -66,10 +68,112 @@ include($header);
 
 ?>
 <div class="content">
+    <div class="confirmation" style="margin-bottom: 2rem;">
+        <h2 style="color: red">
+            <?php if (isset($_SESSION["confirmationBad"])) {
+                echo htmlspecialchars($_SESSION["confirmationBad"]);
+            }  ?>
+        </h2>
+        <h2 style="color: green">
+            <?php if (isset($_SESSION["confirmationGood"])) {
+                echo htmlspecialchars($_SESSION["confirmationGood"]);
+            } ?>
+        </h2>
+    </div>
     <h1>Professor Welcome Page</h1>
+    <section>
+        <h2>My Courses</h2>
+        <div class="myCourses">
+            <p><?php echo $myCourses ?></p>
+        </div>
+    </section>
     <?php
     echo "<p>The ProfessorId is " . $_SESSION["professorId"] . "</p>";
     ?>
+    <table class='table table-primary table-striped table-hover'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Enrolled</th>
+                <th>Pending</th>
+                <th>Seats Available</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CSCI101</td>
+                <td>Computer</td>
+                <td>7</td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td><input type="button" value="Approve"></td>
+                            </tr>
+                            <tr>
+                                <td>Jane Doe</td>
+                                <td><input type="button" value="Approve"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>CSCI101</td>
+                <td>Computer</td>
+                <td>7</td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td><input type="button" value="Approve"></td>
+                            </tr>
+                            <tr>
+                                <td>Jane Doe</td>
+                                <td><input type="button" value="Approve"></td>
+                            </tr>
+                            <tr>
+                                <td>John Doe</td>
+                                <td><input type="button" value="Approve"></td>
+                            </tr>
+                            <tr>
+                                <td>Jane Doe</td>
+                                <td><input type="button" value="Approve"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>CSC2101</td>
+                <td>Computer</td>
+                <td>7</td>
+                <td>0</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <?php
 include($footer);
