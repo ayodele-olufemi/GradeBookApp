@@ -12,7 +12,7 @@ if (isset($_POST["logoutBtn"])) {
     session_start();
     session_destroy();
     $_SESSION = array();
-    header("location:" . $docRoot . "index.php");
+    header("location:" . $docRoot . "/index.php");
 }
 
 
