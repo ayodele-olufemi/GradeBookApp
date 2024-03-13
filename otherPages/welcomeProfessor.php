@@ -18,6 +18,11 @@ include($header);
     <?php
     echo "<p>The ProfessorId is " . $_SESSION["professorId"] . "</p>";
     ?>
+    <section>
+        <h2>
+            <a href="/GradeBookApp/otherPages/professorAssignmentsPage.php">Assignments</a>
+        </h2>
+    </section>
 </div>
 <?php
 include($footer);
