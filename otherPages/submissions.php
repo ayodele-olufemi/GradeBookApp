@@ -1,20 +1,27 @@
 <?php
-$path = realpath(dirname(__FILE__));
-$docRoot = "/GradeBookApp/";
+session_start();
+$local = true;
+$path = $_SERVER["DOCUMENT_ROOT"];
+$docRoot = "http://" . $_SERVER["HTTP_HOST"] . "/";
 
-$header = $path . "/includes/headerLoggedIn.php";
-$footer = $path . "/includes/footer.php";
+if ($local == false) {
+    $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"];
+}
 
-require_once($path . "/includes/config.php");
+$header = $path . "/GradeBookApp/includes/headerLoggedIn.php";
+$footer = $path . "/GradeBookApp/includes/footer.php";
 
+require_once($path . "/GradeBookApp/includes/config.php");
+
+// Check if the user is not logged in. Send them to index page
 if (!isset($_SESSION["loggedin"])) {
-    header("location: " . $docRoot . "index.php");
+    header("location: " . $docRoot . "GradeBookApp/");
     exit();
 }
 
 include($header);
 ?>
-<link rel="stylesheet" href="/css/submissions.css">
+<link rel="stylesheet" href="/GradeBookApp/css/assignments.css">
 <h1>Submissions</h1>
 <table style="width: 100%;">
     <tr class="columnHeaders">
