@@ -110,7 +110,7 @@ if (isset($_POST["returnHome"])) {
         if (isset($_SESSION["confirmationBad"])) {
             unset($_SESSION["confirmationBad"]);
         }
-        header("location: " . $docRoot . "otherPages/welcomeStudent.php");
+        header("location: " . $docRoot . "/otherPages/welcomeStudent.php");
     } else {
         if (isset($_SESSION["confirmationGood"])) {
             unset($_SESSION["confirmationGood"]);
@@ -118,7 +118,7 @@ if (isset($_POST["returnHome"])) {
         if (isset($_SESSION["confirmationBad"])) {
             unset($_SESSION["confirmationBad"]);
         }
-        header("location: " . $docRoot . "otherPages/welcomeProfessor.php");
+        header("location: " . $docRoot . "/otherPages/welcomeProfessor.php");
     }
 }
 
